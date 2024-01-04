@@ -64,7 +64,6 @@
       
         game.render(ctx)
 
-        //ctx.fillRect(0)
 
         requestAnimationFrame(render)
     }

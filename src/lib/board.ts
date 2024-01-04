@@ -40,13 +40,10 @@ export default class board{
                 if((instance.x + instance.size) < x || (instance.y + instance.size) < y)
                     continue
 
-                    
-                const lines = instance.corner_points.map(({x, y}, i) => {
-                    const next = instance.corner_points[ (i >= instance.corner_points.length -1)? 0 : i+1]
-                    
-                    return {x1: x, y1: y, x2: next.x, y: next.y}
-                })
-                //console.log(countIntersects({x1: 0, y1: instance.y, x2: x, y2: y}, lines))
+                if(!instance.inside(x, y))
+                    continue
+
+                return instance
             }
         }
     }
