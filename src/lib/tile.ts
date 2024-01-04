@@ -58,10 +58,10 @@ export default class Tile{
 
     draw(context: CanvasRenderingContext2D){
         //Outer circle
-        context.fillStyle = "rgb(255, 0, 0)"
+        /*context.fillStyle = "rgb(255, 0, 0)"
         context.beginPath();
         context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        context.fill();
+        context.fill();*/
 
         //Hexagon
         context.fillStyle = "rgb(0, 255, 0)"
