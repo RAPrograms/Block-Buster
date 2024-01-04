@@ -3,7 +3,6 @@
     import { countIntersects, getScreenSize } from '../lib/general'
 
     import { game, Tile } from '../lib/board'
-    import { createExpect } from 'vitest';
  
     let canvas: HTMLCanvasElement
     let tileSize = 0
