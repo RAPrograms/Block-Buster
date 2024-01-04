@@ -2,8 +2,11 @@
     import { onMount } from 'svelte';
     import { countIntersects, getScreenSize } from '../lib/general'
 
-    import { game, Tile } from '../lib/board'
- 
+    import Board from '../lib/board'
+    import Tile from '../lib/tile';
+
+    let game = new Board(5, ["a", "b", "c", "d", "e", "f", "g"])
+
     let canvas: HTMLCanvasElement
     let tileSize = 0
     let board = {x: 0, y: 0, width: 0, height: 0}
@@ -39,7 +42,7 @@
                 }
 
                 instance.setPosition(x, y)
-                instance.updateSize(tileRadius)
+                instance.setSize(tileRadius)
             }
             y += tileRadius * .86
             x = board.x
@@ -113,6 +116,20 @@
         calculatePositioning(canvas)
  
     }
+
+
+
+    const tile = new Tile("a")
+    tile.setPosition(100, 100)
+    tile.setSize(10)
+
+    console.dir(tile.corner_points)
+
+    /*tile.corner_points.map(({x, y}, index) => {
+
+        console.log(x, y)
+    })*/
+
 </script>
 
 <svelte:window on:resize={handleReaize}/>

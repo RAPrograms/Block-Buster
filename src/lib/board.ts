@@ -1,68 +1,7 @@
 import { countIntersects } from "./general"
+import Tile from "./tile"
 
-export class Tile{
-    corner_points: Array<{x: number, y: number}>
-    capured: -1 | 0 | 1 = -1
-    character: string
-    size: number = 0
-    x: number = 0
-    y: number = 0
-
-    updateCorners(){
-        this.corner_points = []
-
-        const size = this.size * .99
-
-        const angle = 2 * Math.PI / 6
-    
-        for (var i = 0; i < 6; i++) {
-            this.corner_points.push({
-                x: this.x + size * Math.cos(angle * i),
-                y: this.y + size * Math.sin(angle * i)
-            })
-        }
-    }
-
-
-    setPosition(x: number, y: number){
-        this.x = x
-        this.y = y
-        this.updateCorners()
-    }
-
-    updateSize(size: number){
-        this.size = size
-        this.updateCorners()
-    }
-
-
-    draw(context: CanvasRenderingContext2D){
-        //Outer circle
-        context.fillStyle = "rgb(255, 0, 0)"
-        context.beginPath();
-        context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        context.fill();
-
-        //Hexagon
-        context.fillStyle = "rgb(0, 255, 0)"
-        context.beginPath();
-        this.corner_points.forEach(({x, y}) => { context.lineTo(x, y) });
-        context.fill()
-
-        //Character
-        context.fillStyle = "rgb(255, 255, 255)"
-        context.font = `${this.size}px Arial`;
-        const wordWidth = context.measureText(this.character).width
-        context.fillText(this.character, this.x - (wordWidth / 2), this.y + (this.size / 2.5));
-    }
-
-    constructor(character: string){
-        this.character = character.toUpperCase()
-        this.corner_points = []
-    }
-}
-
-class board{
+export default class board{
     matrix: Array<Array<Tile>> = []
 
     constructor(size: number, possibleCharacters: Array<string>){
@@ -121,5 +60,3 @@ class board{
         });
     }
 }
-
-export let game = new board(5, ["a", "b", "c", "d", "e", "f", "g"])
