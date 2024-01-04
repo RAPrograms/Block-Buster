@@ -17,6 +17,3 @@ jobs:
         run: |
           npm i
           npm run test
-
-      - name: "test"
-        run: echo "hi"
