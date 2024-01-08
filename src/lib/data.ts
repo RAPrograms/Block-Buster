@@ -64,6 +64,10 @@ export const templateStore = (() => {
 
             const transaction = (await database).transaction(["templates"], "readwrite");
             transaction.objectStore("templates").add(data)
+
+            const storeData = await get(store)
+            storeData.push(data)
+            store.set(Promise.resolve(storeData))
         },
         set: async (id: string, data: template) => {
             data.id = id
@@ -84,3 +88,13 @@ export const templateStore = (() => {
         }
 	};
 })()
+
+/*templateStore.add({
+    name: "test",
+    grid_size: 5,
+    questions: {
+        a: [{
+            answer: "apple", question: "it's apple"
+        }]
+    }
+})*/
