@@ -56,6 +56,8 @@ export function structureQuestions(questions: Array<{answer: string, question: s
     const output: Record<string, Array<{answer: string, question: string}>> = {}
 
     questions.forEach(question => {
+        question.answer = question.answer.toLowerCase()
+
         if(output[question.answer[0]] == undefined)
             //@ts-ignore
             output[question.answer[0]] = []
