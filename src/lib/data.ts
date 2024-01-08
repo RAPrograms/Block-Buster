@@ -88,13 +88,3 @@ export const templateStore = (() => {
         }
 	};
 })()
-
-/*templateStore.add({
-    name: "test",
-    grid_size: 5,
-    questions: {
-        a: [{
-            answer: "apple", question: "it's apple"
-        }]
-    }
-})*/
