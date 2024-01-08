@@ -40,3 +40,29 @@ export function countIntersects(line: {x1: number, y1: number, x2: number, y2: n
     return count
 }
  
+export function destructureQuestions(questions: Record<string, Array<{answer: string, question: string}>>): Array<{answer: string, question: string}>{
+    const output: Array<{answer: string, question: string}>  = []
+    
+    Object.values(questions).forEach(values => {
+        values.forEach(q => {
+            output.push(q)
+        })
+    })
+
+    return output
+}
+
+export function structureQuestions(questions: Array<{answer: string, question: string}>){
+    const output: Record<string, Array<{answer: string, question: string}>> = {}
+
+    questions.forEach(question => {
+        if(output[question.answer[0]] == undefined)
+            //@ts-ignore
+            output[question.answer[0]] = []
+
+        //@ts-ignore
+        output[question.answer[0]].push(question)
+    })
+
+    return output
+}

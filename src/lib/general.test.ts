@@ -49,3 +49,17 @@ test("count intersection square", () => {
 
     expect( general.countIntersects(line1, lines) ).toBe(1)
 })
+
+test("destructure question object", () => {
+    const input = {a: [{answer: "apple", question: "its a red fruit"}], b: [{answer: "bannana", question: "its normally in a buntch on a tree"}]}
+    const expected = [{answer: "apple", question: "its a red fruit"}, {answer: "bannana", question: "its normally in a buntch on a tree"}]
+
+    expect( general.destructureQuestions(input) ).toStrictEqual(expected)
+})
+
+test("structure question object", () => {
+    const input = [{answer: "apple", question: "its a red fruit"}, {answer: "bannana", question: "its normally in a buntch on a tree"}]
+    const expected = {a: [{answer: "apple", question: "its a red fruit"}], b: [{answer: "bannana", question: "its normally in a buntch on a tree"}]}
+
+    expect( general.structureQuestions(input) ).toStrictEqual(expected)
+})
