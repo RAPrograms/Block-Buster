@@ -54,12 +54,11 @@
         & > div{
             text-align: center;
             flex-grow: 1;
+            position: relative;
+            display: flex;
             width: max-content;
             overflow: hidden;
-            
-            & > img{
-                height: 100%;
-            }
+            justify-content: center;
         }
 
         & > a{
