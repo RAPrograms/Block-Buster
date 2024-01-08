@@ -1,8 +1,11 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+    import { templateStore } from '../lib/data';
+
     import Icon from './Icon.svelte'
     import banner from '/Banner.svg'
 
-    import { templateStore } from '../lib/data';
+    const dispatch = createEventDispatcher();
 </script>
 
 
@@ -15,16 +18,16 @@
 
 <main>
     <h2>Games</h2>
-    <button class="new-game">New Game</button>
+    <button class="new-game" on:click={() => {dispatch('createTemplate')}}>New Game</button>
 
     <section class="instances">
         {#await $templateStore}
             Loading
         {:then templates} 
-            {#each templates as {name}}
+            {#each templates as {name, id}}
                 <article>
                     <button>{name}</button>
-                    <button>
+                    <button on:click={() => {dispatch("editTemplate", {id})}}>
                         <Icon name="edit" width=20 height=20/>
                     </button>
                 </article>

@@ -1,13 +1,20 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './components/Counter.svelte'
-  import Game from './components/Game.svelte';
+  import MainMenu from './components/MainMenu.svelte';
+  import TemplateEditor from './components/TemplateEditor.svelte';
 
-  let active = true
+  import { templateStore, type template } from './lib/data';
+
+  let templateInspecting: null | template = null
 </script>
-  <!--<button on:click={() => {active = false}}>stop</button>-->
 
-{#if active}
-  <Game/>
+{#if templateInspecting == null}
+  <MainMenu
+    on:createTemplate={() => {templateInspecting = {name: "", grid_size: 5, questions: {}}}}
+    on:editTemplate={(async ({detail}) => {
+      //TODO: add loading screen
+      templateInspecting = await templateStore.get(detail.id)
+    })}
+  />
+{:else}
+  <TemplateEditor data={templateInspecting} on:close={() => {templateInspecting = null}}/>
 {/if}

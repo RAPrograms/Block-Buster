@@ -1,0 +1,15 @@
+@mixin FancyButton($color){
+    background-color: color-mix(in srgb, $color, transparent 75%);;
+    border: 1px solid $color;
+    font-weight: lighter;
+    border-radius: .25em;
+    width: max-content;
+    padding: 5px 20px;
+    cursor: pointer;
+    color: white;
+    outline: none;
+
+    &:hover, &:focus{
+        background-color: color-mix(in srgb, $color, transparent 50%);;
+    }
+}
