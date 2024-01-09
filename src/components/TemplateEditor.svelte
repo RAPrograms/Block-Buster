@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { template } from '../lib/data';
+    import { templateStore, type template } from '../lib/data';
     import { get, writable } from 'svelte/store';
     import { createEventDispatcher, onMount } from 'svelte';
     import { destructureQuestions, structureQuestions } from '../lib/general'
@@ -17,6 +17,7 @@
 
         return {
             subscribe: store.subscribe,
+            set: store.set,
             new: () => {
                 const temp = get(store)
                 temp.unshift({answer: "", question: ""}) 
@@ -31,20 +32,31 @@
     })()
 
     function save(){
-        console.log($questions)
+        const template = data
+        template.questions = structureQuestions($questions)
+        templateStore.add(template)
+        dispatch("close")
     }
 </script>
 <form on:submit|preventDefault={save}>
     <header>
         <label class="name">
             <div>Name</div>
-            <input type="text" required placeholder="" value={data.name || ""}>
+            <input type="text" required placeholder="" bind:value={data.name}>
         </label>
         <label class="grid-size">
             <div>Grid Size</div>
-            <input type="text" required placeholder="" value={data.grid_size || ""}>
+            <input type="text" required placeholder="" bind:value={data.grid_size}>
         </label>
-        <button type="button">
+        <button type="button" on:click={async () => {
+            if(!confirm("Are you sure you want to delete?"))
+                return
+
+            //TODO: show loading icon
+            //@ts-ignore
+            await templateStore.delete(data.id)
+            dispatch("close")
+        }}>
             <Icon name="bin" width=25 height=25/>
         </button>
     </header>

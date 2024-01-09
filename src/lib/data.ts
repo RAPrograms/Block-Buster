@@ -85,6 +85,22 @@ export const templateStore = (() => {
             }
 
             store.set(Promise.resolve(storeData))
+        },
+        delete: async (id: string) => {
+            const transaction = (await database).transaction(["templates"], "readwrite");
+            transaction.objectStore("templates").delete(id)
+
+            const storeData = await get(store)
+            for (const index in storeData) {
+                if(storeData[index].id !== id)
+                    continue
+
+                //@ts-ignore
+                storeData.splice(index, 1)
+                break
+            }
+
+            store.set(Promise.resolve(storeData))
         }
 	};
 })()
