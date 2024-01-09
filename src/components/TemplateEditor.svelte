@@ -2,7 +2,7 @@
     import { templateStore, type template } from '../lib/data';
     import { get, writable } from 'svelte/store';
     import { createEventDispatcher, onMount } from 'svelte';
-    import { destructureQuestions, structureQuestions } from '../lib/general'
+    import { destructureQuestions, getEventTarget, structureQuestions } from '../lib/general'
 
     import Icon from "./Icon.svelte"
 
@@ -33,9 +33,48 @@
 
     function save(){
         const template = data
+
+        if(template.grid_size > 15)
+            template.grid_size = 15
+        else if(template.grid_size < 5)
+            template.grid_size = 5
+
         template.questions = structureQuestions($questions)
-        templateStore.add(template)
+
+        if(template.id == undefined)
+            templateStore.add(template)
+        else
+            templateStore.set(template.id, template)
+
         dispatch("close")
+    }
+
+
+    export function gridSize(node: HTMLInputElement) {
+        node.addEventListener('keydown', (e) => {
+            const key = e.key || e.keyCode;
+
+            if(key === "Backspace")
+                return
+
+            if(Number.isNaN(Number(key)))
+                return e.preventDefault()
+        })
+        node.addEventListener('change', e => {
+            const input: HTMLInputElement = getEventTarget(e)
+            const number = Number(input.value)
+
+            if(Number.isNaN(number))
+                return input.value = "5"
+
+            if(number > 15)
+                return input.value = "15"
+            
+            if(number < 5)
+                return input.value = "5"
+        })
+
+        return { destroy(){} };
     }
 </script>
 <form on:submit|preventDefault={save}>
@@ -46,7 +85,7 @@
         </label>
         <label class="grid-size">
             <div>Grid Size</div>
-            <input type="text" required placeholder="" bind:value={data.grid_size}>
+            <input type="number" inputmode="numeric" required placeholder="" use:gridSize bind:value={data.grid_size}>
         </label>
         <button type="button" on:click={async () => {
             if(!confirm("Are you sure you want to delete?"))
@@ -97,46 +136,45 @@
     @import '../assets/variables.scss';
 
     form{
-        flex: 1;
-        display: flex;
         flex-direction: column;
+        display: flex;
+        flex: 1;
 
         & > header{
-            display: flex;
             margin-bottom: 10px;
             align-items: center;
+            display: flex;
 
             & > label{
                 &:first-child{ flex: 1; }
 
-                margin: 10px;
                 border: 1px solid white;
                 box-sizing: border-box;
                 border-radius: 5px;
                 position: relative;
-                display: block;
-                color: white;
-                height: 100%;
                 min-height: 40px;
                 display: block;
+                color: white;
+                margin: 10px;
+                height: 100%;
 
                 & > div{
+                    background-color: #242424;
                     position: absolute;
+                    padding: 0 5px;
                     top: -32%;
                     left: 5px;
-                    background-color: #242424;
-                    padding: 0 5px;
                 }
 
                 & > input{
-                    background: none;
-                    padding: 5px 10px;
-                    color: white;
-                    box-sizing: border-box;
-                    width: 100%;
-                    height: 40px;
                     border-radius: inherit;
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    background: none;
+                    color: white;
+                    height: 40px;
                     border: none;
+                    width: 100%;
                 }
             }
 
@@ -154,31 +192,31 @@
             margin: 0 10px;
 
             & > header{
-                display: grid; 
+                grid-template-columns: 40px 1fr 40px; 
+                outline: 1px solid white;
+                grid-template-rows: 1fr; 
                 grid-auto-columns: 1fr; 
                 grid-auto-rows: 1fr; 
-                grid-template-columns: 40px 1fr 40px; 
-                grid-template-rows: 1fr; 
-                gap: 0px 0px; 
-                outline: 1px solid white;
+                display: grid; 
                 padding: 10px;
+                gap: 0px 0px; 
                 grid-template-areas: 
                     ". Name Add"; 
 
                 & > div:nth-child(2){
-                    grid-area: Name;
                     text-align: center;
+                    grid-area: Name;
                 }
                 & > button:nth-child(3){
-                    grid-area: Add;
                     cursor: pointer;
+                    grid-area: Add;
                 }
             }
 
             & > section {
-                flex: 1;
                 overflow-y: scroll;
                 height: 300px;
+                flex: 1;
 
                 & > header > * {
                     font-weight: bold;

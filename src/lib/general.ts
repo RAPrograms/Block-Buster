@@ -5,6 +5,9 @@ export function getScreenSize(){
     }
 }
 
+export function getEventTarget(e: any){
+    return e.target || e.srcElement || e.originalTarget
+}
 
 export function intersects(l1: {x1: number, y1: number, x2: number, y2: number}, l2: {x1: number, y1: number, x2: number, y2: number}): boolean{
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/3037b45bc402892dc1273dc0c3b70532f3bcda39
