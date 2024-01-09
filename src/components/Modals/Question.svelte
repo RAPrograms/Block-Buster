@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import Modal from "./Modal.svelte";
 
     class Question{
