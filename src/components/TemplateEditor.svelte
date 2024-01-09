@@ -1,14 +1,17 @@
 <script lang="ts">
-    import { templateStore, type template } from '../lib/data';
-    import { get, writable } from 'svelte/store';
-    import { createEventDispatcher, onMount } from 'svelte';
     import { destructureQuestions, getEventTarget, structureQuestions } from '../lib/general'
+    import { templateStore, type template } from '../lib/data';
+    import { createEventDispatcher } from 'svelte';
+    import { get, writable } from 'svelte/store';
 
+    import ConformationModal from './Modals/Conformation.svelte';
     import Icon from "./Icon.svelte"
 
     export let data: template
 
     const dispatch = createEventDispatcher();
+
+    let confirmDelete: () => Promise<boolean>
 
     let questions = (() => {
         const store = writable(destructureQuestions(data.questions))
@@ -77,6 +80,9 @@
         return { destroy(){} };
     }
 </script>
+
+<ConformationModal message="Delete Template?" bind:ask={confirmDelete}/>
+
 <form on:submit|preventDefault={save}>
     <header>
         <label class="name">
@@ -87,17 +93,19 @@
             <div>Grid Size</div>
             <input type="number" inputmode="numeric" required placeholder="" use:gridSize bind:value={data.grid_size}>
         </label>
-        <button type="button" on:click={async () => {
-            if(!confirm("Are you sure you want to delete?"))
-                return
+        {#if data.id}
+            <button type="button" on:click={async() => {
+                if(!(await confirmDelete()))
+                    return
 
-            //TODO: show loading icon
-            //@ts-ignore
-            await templateStore.delete(data.id)
-            dispatch("close")
-        }}>
-            <Icon name="bin" width=25 height=25/>
-        </button>
+                //TODO: show loading icon
+                //@ts-ignore
+                await templateStore.delete(data.id)
+                dispatch("close")
+            }}>
+                <Icon name="bin" width=25 height=25/>
+            </button>
+        {/if}
     </header>
 
     <section class="questions">
