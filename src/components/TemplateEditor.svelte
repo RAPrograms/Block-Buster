@@ -10,7 +10,25 @@
 
     const dispatch = createEventDispatcher();
 
-    let questions = writable(destructureQuestions(data.questions)) 
+    let questions = (() => {
+        const store = writable(destructureQuestions(data.questions))
+        if(get(store).length <= 0)
+            store.set([{answer: "", question: ""}])
+
+        return {
+            subscribe: store.subscribe,
+            new: () => {
+                const temp = get(store)
+                temp.unshift({answer: "", question: ""}) 
+                store.set(temp)
+            },
+            remove: (index: number) => {
+                const temp = get(store)
+                temp.splice(index, 1);
+                store.set(temp)
+            }
+        }
+    })()
 
     function save(){
         console.log($questions)
@@ -35,11 +53,7 @@
         <header>
             <div></div>
             <div>Questions</div>
-            <button type="button" on:click={() => { 
-                const temp = get(questions)
-                temp.unshift({answer: "", question: ""}) 
-                questions.set(temp)
-            }}>
+            <button type="button" on:click={questions.new}>
                 <Icon name="plus" width=20 height=20/>
             </button>
         </header>
@@ -53,11 +67,7 @@
                     <input type="text" required bind:value={$questions[i].answer}>
                     <input type="text" required bind:value={$questions[i].question}>
                     
-                    <button type="button" on:click={() => {
-                        const temp = get(questions)
-                        temp.splice(i, 1);
-                        questions.set(temp)
-                    }}>
+                    <button type="button" disabled={$questions.length <= 1} on:click={() => {questions.remove(i)}}>
                         <Icon name="cross" width=20 height=20/>
                     </button>
                 </div>

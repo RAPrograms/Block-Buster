@@ -5,11 +5,19 @@
     border-radius: .25em;
     width: max-content;
     padding: 5px 20px;
-    cursor: pointer;
+    
     color: white;
     outline: none;
 
-    &:hover, &:focus{
+    &:disabled{
+        opacity: .7;
+    }
+
+    &:not(:disabled){
+        cursor: pointer;
+    }
+
+    &:not(:disabled):is(:hover, :focus){
         background-color: color-mix(in srgb, $color, transparent 50%);;
     }
 }
