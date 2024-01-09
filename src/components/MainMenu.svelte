@@ -8,7 +8,6 @@
     const dispatch = createEventDispatcher();
 </script>
 
-
 <header>
     <div>
         <img src={banner} alt=""/>
@@ -35,6 +34,8 @@
         {/await}
     </section>
 </main>
+
+<div style="height: 1000px;"></div>
 
 <style lang="scss">
     header{
