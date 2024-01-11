@@ -1,4 +1,4 @@
-import { countIntersects } from "./general"
+import { countIntersects, getSiblingTilePosition } from "./general"
 import Tile from "./tile"
 
 export default class Board{
@@ -55,5 +55,53 @@ export default class Board{
                 instance.draw(context)
             })
         });
+    }
+
+
+    #leftToRightWiningPath(team: 0|1, possition: [number, number], path: Array<string> = []): null | Array<string>{
+        const instance = this.matrix[possition[0]]?.[possition[1]]
+        if(instance == undefined)
+            return null
+        
+        if(instance.capured !== team)
+            return null
+
+
+        if(path.includes(`${possition[0]}|${possition[1]}`))
+            return null
+
+        if(possition[0] == this.matrix.length - 1){
+            path.push(`${possition[0]}|${possition[1]}`)
+            return path
+        }
+
+        const new_path = path.slice(0)
+        new_path.push(`${possition[0]}|${possition[1]}`)
+        
+        for(var i=0; i<6; i++){
+            const result = this.#leftToRightWiningPath(team, getSiblingTilePosition(possition, i), new_path)
+            if(result)
+                return result
+        }
+
+        return null
+    }
+    
+
+    getWiningPath(){
+
+
+        const result = this.#leftToRightWiningPath(0, [0, 0])
+        console.log("\nwining path", result)
+
+        if(result != null)
+            result.forEach(location => {
+                const [colum, row] = location.split("|")
+                this.matrix[Number(colum)][Number(row)].colour = "orange"
+            })
+
+        /*for(var i=0; i<this.matrix.length; i++){
+            this.#leftToRightWiningPath(1, [0, i], [])
+        }*/
     }
 }
