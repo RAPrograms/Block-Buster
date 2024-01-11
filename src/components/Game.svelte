@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import { countIntersects, getScreenSize } from '../lib/general'
+    import { getScreenSize } from '../lib/general'
 
     import Board from '../lib/board'
     import Question from '../components/modals/Question.svelte';

@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { templateStore, currentGame, type template } from '../../lib/data';
     import { ForceNumberInput, getEventTarget } from '../../lib/general';
+    import { currentGame } from '../../lib/data';
 
     import Icon from "../Icon.svelte";
     import Modal from "./Modal.svelte";
 
     let gameid: undefined | string = undefined
-    let form: HTMLFormElement
 
     export function open(id: string){ gameid = id }
 
