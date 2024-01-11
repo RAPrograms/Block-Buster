@@ -8,6 +8,17 @@ export interface template{
     questions: Record<string, Array<{answer: string, question: string}>>
 }
 
+export interface Game{
+    board: Board,
+    streakLimit: number,
+    team1: gameTeam,
+    team2: gameTeam,
+    questions: Record<string, {
+        answer: string;
+        question: string;
+    }[]> 
+}
+
 export type gameTeam = {
     colour: string,
     name: string
@@ -113,10 +124,7 @@ export const templateStore = (() => {
 
 
 export const currentGame = (() => {
-    const store: Writable<undefined | {board: Board, streakLimit: number, team1: gameTeam, team2: gameTeam, questions: Record<string, {
-        answer: string;
-        question: string;
-    }[]> }> = writable(undefined)
+    const store: Writable<undefined | Game> = writable(undefined)
 
     return {
         subscribe: store.subscribe,

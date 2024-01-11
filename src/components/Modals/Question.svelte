@@ -37,25 +37,25 @@
 
     function Guess(){
         //@ts-ignore
-        if(!guessValue.includes(currentQuestion?.answer[0])){
+        if(guessValue[0].toLowerCase() !== currentQuestion?.answer[0]){
             error = true
             return alert(`This word dosn't start with ${currentQuestion?.answer[0]}`)
         }
 
+
+        if(guessValue.trim().replaceAll(' ', '').toLowerCase() === currentQuestion?.answer)
+            return currentQuestion?.resolver(currentTeam)
+
+        
         if(currentTeam !== currentQuestion?.originalTeam){
             error = true
             currentQuestion?.resolver(null)
             return
         }
-
-        if(guessValue.trim().replaceAll(' ', '') !== currentQuestion?.answer){
-            currentTeam = (currentTeam == 0)? 1:0
-            error = true
-            guessValue = ""
-            return
-        }
         
-        currentQuestion?.resolver(currentTeam)
+        currentTeam = ((currentTeam == 0)? 1:0)
+        error = true
+        guessValue = "" 
     }
 </script>
 

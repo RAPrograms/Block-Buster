@@ -30,9 +30,9 @@
             },
             {
                 //@ts-ignore
-                name: form.querySelector('input[name=team-one-name]').value,
+                name: form.querySelector('input[name=team-two-name]').value,
                 //@ts-ignore
-                colour: form.querySelector('article > label > input[type=color]').value
+                colour: form.querySelector('article:nth-child(2) > label > input[type=color]').value
             }
         )
     }
@@ -43,7 +43,7 @@
         <h1>Start Game</h1>
 
         <label class="streak-maximum">
-            <input type="number" name="streak-limit" value="5" on:change={(e) => {
+            <input type="number" name="streak-limit" value="1" on:change={(e) => {
                 const input = getEventTarget(e)
                 const number = Number(input.value)
 

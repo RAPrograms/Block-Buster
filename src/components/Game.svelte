@@ -1,17 +1,39 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import { countIntersects, getScreenSize } from '../lib/general'
 
     import Board from '../lib/board'
-    import Tile from '../lib/tile';
+    import Question from '../components/modals/Question.svelte';
+    import { currentGame, type Game } from '../lib/data';
 
-    let game = new Board(5, ["a", "b", "c", "d", "e", "f", "g"])
+    let askQuestion: (question: string, answer: string, team: 0 | 1) => Promise<0 | 1 | null>
 
     let canvas: HTMLCanvasElement
     let tileSize = 0
     let board = {x: 0, y: 0, width: 0, height: 0}
 
+    onMount(() => {
+        const root = document.querySelector(':root');
+
+        //@ts-ignore
+        root.style.setProperty('--team-one-colour', $currentGame.team1.colour);
+        //@ts-ignore
+        root.style.setProperty('--team-two-colour', $currentGame.team2.colour);
+    })
+
+    onDestroy(() => {
+        const root = document.querySelector(':root');
+
+        //@ts-ignore
+        root.style.removeProperty('--team-one-colour');
+        //@ts-ignore
+        root.style.removeProperty('--team-two-colour');
+    })
+
     function calculatePositioning(canvas: HTMLCanvasElement){
+        //@ts-ignore
+        let game: Board = $currentGame?.board
+
         const a = 2 * Math.PI / 6;
 
         const tileRadius = ((canvas.height >= canvas.width)? canvas.width:canvas.height) / 5 / 2;
@@ -23,8 +45,6 @@
 
         board.x = (canvas.width > canvas.height)? (canvas.width / 2) - (board.width / 2) : 0
         board.y = (canvas.height > canvas.width)? (canvas.height / 2) - (board.height / 2) : 0
-
-        //canvas.getContext("2d")?.fillRect(board.x, board.y, 10, 10)
 
         let x = board.x
         let y = (tileSize / 1.5) + board.y
@@ -60,15 +80,15 @@
         //Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillRect(board.x, board.y, board.width, board.height)
+        //Board bounding box
+        //ctx.fillRect(board.x, board.y, board.width, board.height)
       
-        game.render(ctx)
-
+        $currentGame?.board.render(ctx)
 
         requestAnimationFrame(render)
     }
 
-    function handelClick(e: MouseEvent){
+    async function handelClick(e: MouseEvent){
         const {top, left} = canvas.getBoundingClientRect()
 
         const clickX = e.pageX - left
@@ -80,11 +100,23 @@
         if((board.x + board.width) < clickX || (board.y + board.height) < clickY)
             return
 
-        const instance = game.getCollidingTile(clickX, clickY)
+        const instance = $currentGame?.board.getCollidingTile(clickX, clickY)
         if(instance == undefined)
             return
 
-        console.log(instance)
+        //@ts-ignore
+        const questions: Record<string, { answer: string; question: string; }[]> = $currentGame?.questions[instance.character.toLowerCase()]
+        
+        //@ts-ignore
+        const questionIndex = Math.floor(Math.random() * questions?.length)
+        const question = questions[questionIndex]
+
+        //@ts-ignore
+        const answerResult = await askQuestion(question.question, question.answer, 0)
+        if(answerResult == null)
+            return
+
+        instance.capured = answerResult
     }
 
 
@@ -115,21 +147,9 @@
         calculatePositioning(canvas)
  
     }
-
-
-
-    const tile = new Tile("a")
-    tile.setPosition(100, 100)
-    tile.setSize(10)
-
-    console.dir(tile.corner_points)
-
-    /*tile.corner_points.map(({x, y}, index) => {
-
-        console.log(x, y)
-    })*/
-
 </script>
+
+<Question bind:ask={askQuestion}/>
 
 <svelte:window on:resize={handleReaize}/>
 
