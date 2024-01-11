@@ -58,6 +58,11 @@
         error = true
         guessValue = "" 
     }
+
+    function focus(node: HTMLInputElement){
+        node.focus()
+        return {}
+    }
 </script>
 
 <Modal show={currentQuestion != undefined}>
@@ -68,7 +73,7 @@
         </header>
 
         <div class="question">{currentQuestion?.question}?</div>
-        <input type="text" placeholder="Starts with a {currentQuestion?.answer[0]}" on:input={() => {error = false}} class:error={error} bind:value={guessValue} required>
+        <input type="text" use:focus placeholder="Starts with a {currentQuestion?.answer[0]}" on:input={() => {error = false}} class:error={error} bind:value={guessValue} required>
     
         <button type="submit">Guess</button>
     </form>
