@@ -6,6 +6,8 @@
     import Question from '../components/modals/Question.svelte';
     import { currentGame, type Game } from '../lib/data';
 
+    const currentTeam: {id: number, streak: number} = {id: -1, streak: 0}
+
     let askQuestion: (question: string, answer: string, team: 0 | 1) => Promise<0 | 1 | null>
 
     let canvas: HTMLCanvasElement
@@ -19,6 +21,8 @@
         root.style.setProperty('--team-one-colour', $currentGame.team1.colour);
         //@ts-ignore
         root.style.setProperty('--team-two-colour', $currentGame.team2.colour);
+
+        currentTeam.id = (Math.random() > .5)? 1:0
     })
 
     onDestroy(() => {
@@ -112,11 +116,18 @@
         const question = questions[questionIndex]
 
         //@ts-ignore
-        const answerResult = await askQuestion(question.question, question.answer, 0)
+        const answerResult = await askQuestion(question.question, question.answer, currentTeam.id)
         if(answerResult == null)
             return
 
         instance.capured = answerResult
+
+        if(currentTeam.id == answerResult && currentTeam.streak < $currentGame?.streakLimit - 1){
+            return currentTeam.streak++
+        }
+
+        currentTeam.id = (currentTeam.id == 0)? 1:0
+        currentTeam.streak = 0
     }
 
 
