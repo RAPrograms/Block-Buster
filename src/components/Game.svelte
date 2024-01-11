@@ -6,6 +6,9 @@
     import Question from '../components/modals/Question.svelte';
     import { currentGame, type Game } from '../lib/data';
 
+    //@ts-ignore
+    const details: Game = $currentGame
+
     const currentTeam: {id: number, streak: number} = {id: -1, streak: 0}
 
     let askQuestion: (question: string, answer: string, team: 0 | 1) => Promise<0 | 1 | null>
@@ -18,9 +21,9 @@
         const root = document.querySelector(':root');
 
         //@ts-ignore
-        root.style.setProperty('--team-one-colour', $currentGame.team1.colour);
+        root.style.setProperty('--team-one-colour', details.teams[0].colour);
         //@ts-ignore
-        root.style.setProperty('--team-two-colour', $currentGame.team2.colour);
+        root.style.setProperty('--team-two-colour', details.teams[1].colour);
 
         currentTeam.id = (Math.random() > .5)? 1:0
     })
@@ -108,6 +111,9 @@
         if(instance == undefined)
             return
 
+        if(instance.capured !== -1)
+            return
+
         //@ts-ignore
         const questions: Record<string, { answer: string; question: string; }[]> = $currentGame?.questions[instance.character.toLowerCase()]
         
@@ -117,17 +123,33 @@
 
         //@ts-ignore
         const answerResult = await askQuestion(question.question, question.answer, currentTeam.id)
+        //Both teams are wrong
         if(answerResult == null)
-            return
+            return currentTeam.streak = 0
 
+        //Set tile's team
         instance.capured = answerResult
+        instance.colour = details.teams[answerResult].colour
+        
 
-        if(currentTeam.id == answerResult && currentTeam.streak < $currentGame?.streakLimit - 1){
-            return currentTeam.streak++
+        //Current team wrongly anwser && other team answers correctly  -> other team
+        if(currentTeam.id !== answerResult){
+            currentTeam.id = answerResult
+            currentTeam.streak = 0
+            return
         }
 
-        currentTeam.id = (currentTeam.id == 0)? 1:0
-        currentTeam.streak = 0
+
+        //Current team correctly anwser | streak continues -> current team | streak++
+        if(currentTeam.id === answerResult && (currentTeam.streak + 1) < details.streakLimit)
+            return currentTeam.streak++
+
+        //Current team correctly anwser | streak force stops -> other team
+        else if(currentTeam.id === answerResult){
+            currentTeam.id = (answerResult == 0)? 1:0
+            currentTeam.streak = 0
+            return
+        }
     }
 
 

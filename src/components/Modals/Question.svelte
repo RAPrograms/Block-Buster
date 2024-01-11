@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { currentGame } from "../../lib/data";
     import Modal from "./Modal.svelte";
 
     class Question{
@@ -63,7 +64,7 @@
     <form data-team={currentTeam} on:submit|preventDefault={Guess}>
         <header>
             <h1>Question</h1>
-            <div>Team 1</div>
+            <div>{$currentGame?.teams[currentTeam].name}</div>
         </header>
 
         <div class="question">{currentQuestion?.question}?</div>

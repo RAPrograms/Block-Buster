@@ -11,8 +11,7 @@ export interface template{
 export interface Game{
     board: Board,
     streakLimit: number,
-    team1: gameTeam,
-    team2: gameTeam,
+    teams: [gameTeam, gameTeam]
     questions: Record<string, {
         answer: string;
         question: string;
@@ -133,7 +132,7 @@ export const currentGame = (() => {
             //@ts-ignore
             const board = new Board(template?.grid_size, Object.keys(template?.questions))
             //@ts-ignore
-            store.set({ board, streakLimit, team1, team2, questions: template?.questions })
+            store.set({ board, streakLimit, teams: [team1, team2], questions: template?.questions })
         },
     }
 })()

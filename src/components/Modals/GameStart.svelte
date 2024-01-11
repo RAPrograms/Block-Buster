@@ -63,14 +63,14 @@
                     <Icon name="edit" width="30" height="30"/>
                     <input type="color" value="#FF0000" on:input={handleColourChange}>
                 </label>
-                <input type="text" placeholder="Team 1" name="team-one-name" required>
+                <input type="text" placeholder="Team 1" autocomplete="off" name="team-one-name" required>
             </article>
             <article style="--colour: #0000FF">
                 <label>
                     <Icon name="edit" width="30" height="30"/>
                     <input type="color" value="#0000FF" on:input={handleColourChange}>
                 </label>
-                <input type="text" placeholder="Team 2" name="team-two-name" required>
+                <input type="text" placeholder="Team 2" autocomplete="off" name="team-two-name" required>
             </article>
         </section>
 

@@ -1,11 +1,10 @@
 import { countIntersects } from "./general"
-import { currentGame } from "./data"
 import { get } from "svelte/store"
 
 export default class Tile{
     #corner_points: Array<{x: number, y: number}>
     #border_lines: Array<{x1: number, y1: number, x2: number, y2: number}>
-
+    colour: string  = ""
     capured: -1 | 0 | 1 = -1
     character: string
     size: number = 0
@@ -60,23 +59,21 @@ export default class Tile{
 
     draw(context: CanvasRenderingContext2D){
         //Outer circle
-        /*context.fillStyle = "rgb(255, 0, 0)"
+        /*context.fillStyle
         context.beginPath();
         context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         context.fill();*/
 
-        if(this.capured >= 0){
-            //@ts-ignore
-            const teamData = get(currentGame)?.[`team${this.capured + 1}`]
-            if(teamData == undefined) context.fillStyle = "rgb(0, 255, 0)"
-            else context.fillStyle = teamData.colour
-        }else context.fillStyle = "rgb(0, 255, 0)"
-
-
         //Hexagon
+        context.strokeStyle = "white"
+        context.fillStyle = this.colour
         context.beginPath();
         this.#corner_points.forEach(({x, y}) => { context.lineTo(x, y) });
-        context.fill()
+        context.lineTo(this.#corner_points[0].x, this.#corner_points[0].y)
+
+        if(this.colour !== "") context.fill()
+        
+        context.stroke()
 
         //Character
         context.fillStyle = "rgb(255, 255, 255)"
