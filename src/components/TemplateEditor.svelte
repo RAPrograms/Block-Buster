@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { destructureQuestions, getEventTarget, structureQuestions } from '../lib/general'
+    import { destructureQuestions, getEventTarget, structureQuestions, ForceNumberInput } from '../lib/general'
     import { templateStore, type template } from '../lib/data';
     import { createEventDispatcher } from 'svelte';
     import { get, writable } from 'svelte/store';
@@ -54,15 +54,7 @@
 
 
     export function gridSize(node: HTMLInputElement) {
-        node.addEventListener('keydown', (e) => {
-            const key = e.key || e.keyCode;
-
-            if(key === "Backspace")
-                return
-
-            if(Number.isNaN(Number(key)))
-                return e.preventDefault()
-        })
+        node.addEventListener('keydown', ForceNumberInput)
         node.addEventListener('change', e => {
             const input: HTMLInputElement = getEventTarget(e)
             const number = Number(input.value)
@@ -75,6 +67,8 @@
             
             if(number < 5)
                 return input.value = "5"
+
+            input.value = String(number)
         })
 
         return { destroy(){} };
@@ -154,36 +148,9 @@
             display: flex;
 
             & > label{
+                @include FancyInput(#242424);
                 &:first-child{ flex: 1; }
-
-                border: 1px solid white;
-                box-sizing: border-box;
-                border-radius: 5px;
-                position: relative;
-                min-height: 40px;
-                display: block;
-                color: white;
-                margin: 10px;
-                height: 100%;
-
-                & > div{
-                    background-color: #242424;
-                    position: absolute;
-                    padding: 0 5px;
-                    top: -32%;
-                    left: 5px;
-                }
-
-                & > input{
-                    border-radius: inherit;
-                    box-sizing: border-box;
-                    padding: 5px 10px;
-                    background: none;
-                    color: white;
-                    height: 40px;
-                    border: none;
-                    width: 100%;
-                }
+                margin: 10px
             }
 
             & > button{

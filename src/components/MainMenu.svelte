@@ -4,8 +4,10 @@
 
     import Icon from './Icon.svelte'
     import banner from '/Banner.svg'
+    import GameStartModal from './modals/GameStart.svelte';
 
     const dispatch = createEventDispatcher();
+    let openGameMenu: (id: string) => void
 </script>
 
 <header>
@@ -14,6 +16,8 @@
     </div>
     <a href="https://github.com/Dog2657/Block-Buster" target="_blank" rel="noopener noreferrer">Made by Dog2657</a>
 </header>
+
+<GameStartModal bind:open={openGameMenu}/>
 
 <main>
     <h2>Games</h2>
@@ -25,7 +29,10 @@
         {:then templates} 
             {#each templates as {name, id}}
                 <article>
-                    <button>{name}</button>
+                    <button on:click={() => {
+                        //@ts-ignore
+                        openGameMenu(id)}
+                    }>{name}</button>
                     <button on:click={() => {dispatch("editTemplate", {id})}}>
                         <Icon name="edit" width=20 height=20/>
                     </button>

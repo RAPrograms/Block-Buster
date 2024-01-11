@@ -1,10 +1,16 @@
-import { get, writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
+import Board from './board';
 
 export interface template{
     id?: string
     name: string,
     grid_size: number,
     questions: Record<string, Array<{answer: string, question: string}>>
+}
+
+export type gameTeam = {
+    colour: string,
+    name: string
 }
 
 export const database = new Promise<IDBDatabase>((resolve, reject) => {
@@ -103,4 +109,23 @@ export const templateStore = (() => {
             store.set(Promise.resolve(storeData))
         }
 	};
+})()
+
+
+export const currentGame = (() => {
+    const store: Writable<undefined | {board: Board, streakLimit: number, team1: gameTeam, team2: gameTeam, questions: Record<string, {
+        answer: string;
+        question: string;
+    }[]> }> = writable(undefined)
+
+    return {
+        subscribe: store.subscribe,
+        start: async (id: string, streakLimit: number, team1: gameTeam, team2: gameTeam) => {
+            const template = await templateStore.get(id)
+            //@ts-ignore
+            const board = new Board(template?.grid_size, Object.keys(template?.questions))
+            //@ts-ignore
+            store.set({ board, streakLimit, team1, team2, questions: template?.questions })
+        },
+    }
 })()

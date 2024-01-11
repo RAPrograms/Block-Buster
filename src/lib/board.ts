@@ -1,7 +1,7 @@
 import { countIntersects } from "./general"
 import Tile from "./tile"
 
-export default class board{
+export default class Board{
     matrix: Array<Array<Tile>> = []
 
     constructor(size: number, possibleCharacters: Array<string>){

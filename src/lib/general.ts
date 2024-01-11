@@ -71,3 +71,11 @@ export function structureQuestions(questions: Array<{answer: string, question: s
 
     return output
 }
+
+export function ForceNumberInput(e: KeyboardEvent){
+    if(["Backspace", "ArrowLeft", "ArrowRight", "ArrowDown", "ArrowUp"].includes(e.key))
+        return
+
+    if(Number.isNaN(Number(e.key)))
+        return e.preventDefault()
+}
