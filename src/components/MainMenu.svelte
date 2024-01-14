@@ -6,10 +6,13 @@
     import banner from '/Banner.svg'
     import GameStartModal from './modals/GameStart.svelte';
     import { fade } from 'svelte/transition';
+    import InstallButton from './InstallButton.svelte';
 
     const dispatch = createEventDispatcher();
     let openGameMenu: (id: string) => void
 </script>
+
+<InstallButton/>
 
 <header>
     <div>
