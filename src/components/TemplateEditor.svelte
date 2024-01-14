@@ -4,7 +4,7 @@
     import { createEventDispatcher } from 'svelte';
     import { get, writable } from 'svelte/store';
 
-    import ConformationModal from './Modals/Conformation.svelte';
+    import ConformationModal from './modals/Conformation.svelte';
     import Icon from "./Icon.svelte"
 
     export let data: template

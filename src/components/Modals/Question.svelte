@@ -43,8 +43,7 @@
             return alert(`This word dosn't start with ${currentQuestion?.answer[0]}`)
         }
 
-
-        if(guessValue.trim().replaceAll(' ', '').toLowerCase() === currentQuestion?.answer)
+        if(guessValue.trim().toLowerCase() === currentQuestion?.answer)
             return currentQuestion?.resolver(currentTeam)
 
         
