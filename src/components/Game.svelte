@@ -3,7 +3,7 @@
     import { getScreenSize } from '../lib/general'
 
     import Board from '../lib/board'
-    import Question from '../components/modals/Question.svelte';
+    import Question from './modals/Question.svelte';
     import { currentGame, type Game } from '../lib/data';
 
     //@ts-ignore
@@ -137,6 +137,7 @@
         const path = await details.board.getWiningPath()
 
         if(path != null){
+            currentGame.gameWon(path.team)
             console.log(path.team + 1);
             
             //@ts-ignore
@@ -202,4 +203,4 @@
 
 <svelte:window on:resize={handleReaize}/>
 
-<canvas bind:this={canvas} on:click={handelClick} use:handelCanvas/>
+<canvas bind:this={canvas} on:contextmenu|stopPropagation|preventDefault={() => false} on:click={handelClick} use:handelCanvas/>
