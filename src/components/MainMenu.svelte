@@ -5,6 +5,7 @@
     import Icon from './Icon.svelte'
     import banner from '/Banner.svg'
     import GameStartModal from './modals/GameStart.svelte';
+    import { fade } from 'svelte/transition';
 
     const dispatch = createEventDispatcher();
     let openGameMenu: (id: string) => void
@@ -19,7 +20,7 @@
 
 <GameStartModal bind:open={openGameMenu}/>
 
-<main>
+<main in:fade={{duration: 500}}>
     <h2>Games</h2>
     <button class="new-game" on:click={() => {dispatch('createTemplate')}}>New Game</button>
 
@@ -41,8 +42,6 @@
         {/await}
     </section>
 </main>
-
-<div style="height: 1000px;"></div>
 
 <style lang="scss">
     header{
@@ -67,6 +66,7 @@
             width: max-content;
             overflow: hidden;
             justify-content: center;
+            z-index: 1;
         }
 
         & > a{

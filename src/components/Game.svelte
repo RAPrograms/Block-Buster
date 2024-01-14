@@ -1,10 +1,12 @@
 <script lang="ts">
     import { currentGame, type Game } from '../lib/data';
-    import { getScreenSize } from '../lib/general';
+    import { getScreenSize, removeTeamCSSColours } from '../lib/general';
     import { onDestroy, onMount } from 'svelte';
 
     import Board from '../lib/board'
     import Question from './modals/Question.svelte';
+    import { fade } from 'svelte/transition';
+    import Icon from './Icon.svelte';
 
     //@ts-ignore
     const details: Game = $currentGame
@@ -16,6 +18,7 @@
     let canvas: HTMLCanvasElement
     let tileSize = 0
     let board = {x: 0, y: 0, width: 0, height: 0}
+    let renderId: number
 
     onMount(() => {
         const root = document.querySelector(':root');
@@ -26,15 +29,6 @@
         root.style.setProperty('--team-two-colour', details.teams[1].colour);
 
         currentTeam.id = (Math.random() > .5)? 1:0
-    })
-
-    onDestroy(() => {
-        const root = document.querySelector(':root');
-
-        //@ts-ignore
-        root.style.removeProperty('--team-one-colour');
-        //@ts-ignore
-        root.style.removeProperty('--team-two-colour');
     })
 
     function calculatePositioning(canvas: HTMLCanvasElement){
@@ -78,7 +72,7 @@
 
 
     async function render(){
-        if(canvas == null)
+        if(canvas == null || $currentGame == undefined)
             return
 
         //@ts-ignore
@@ -179,7 +173,7 @@
         canvas.height = height
 
         calculatePositioning(canvas)
-        requestAnimationFrame(render)
+        renderId = requestAnimationFrame(render)
         
         return {
             destroy() {
@@ -198,9 +192,35 @@
  
     }
 </script>
-
 <Question bind:ask={askQuestion}/>
 
 <svelte:window on:resize={handleReaize}/>
 
-<canvas bind:this={canvas} on:contextmenu|stopPropagation|preventDefault={() => false} on:click={handelClick} use:handelCanvas/>
+<main out:fade={{duration: 500}}>
+    <button on:click={() => {
+        cancelAnimationFrame(renderId)
+        currentGame.end()
+        removeTeamCSSColours()
+    }}>
+        <Icon name="home" width="20" height="20"/>
+    </button>
+
+    <canvas bind:this={canvas} on:contextmenu|stopPropagation|preventDefault={() => false} on:click={handelClick} use:handelCanvas/>
+</main>
+
+<style lang="scss">
+    button{
+        border-bottom-right-radius: 100%;
+        background: #1b1b1b;
+        padding: 10px 20px 20px 10px;
+        align-self: flex-start;
+        position: absolute;
+        width: max-content;
+        font-size: 20px;
+        cursor: pointer;
+        color: #fff;
+        border: none;
+        left: 0;
+        top: 0;
+    }
+</style>
