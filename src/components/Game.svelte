@@ -1,10 +1,10 @@
 <script lang="ts">
+    import { currentGame, type Game } from '../lib/data';
+    import { getScreenSize } from '../lib/general';
     import { onDestroy, onMount } from 'svelte';
-    import { getScreenSize } from '../lib/general'
 
     import Board from '../lib/board'
     import Question from './modals/Question.svelte';
-    import { currentGame, type Game } from '../lib/data';
 
     //@ts-ignore
     const details: Game = $currentGame

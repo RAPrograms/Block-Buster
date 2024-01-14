@@ -105,3 +105,12 @@ export function getSiblingTilePosition(current: [number, number], siblin: number
 
     return [NaN, NaN]
 }
+
+export function removeTeamCSSColours(){
+    const root = document.querySelector(':root');
+
+    //@ts-ignore
+    root.style.removeProperty('--team-one-colour');
+    //@ts-ignore
+    root.style.removeProperty('--team-two-colour');
+}

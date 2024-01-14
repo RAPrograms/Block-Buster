@@ -10,6 +10,7 @@ export interface template{
 
 export interface Game{
     board: Board,
+    wonBy: -1 | 0 | 1
     streakLimit: number,
     teams: [gameTeam, gameTeam]
     questions: Record<string, {
@@ -132,7 +133,19 @@ export const currentGame = (() => {
             //@ts-ignore
             const board = new Board(template?.grid_size, Object.keys(template?.questions))
             //@ts-ignore
-            store.set({ board, streakLimit, teams: [team1, team2], questions: template?.questions })
+            store.set({ board, streakLimit, wonBy: -1, teams: [team1, team2], questions: template?.questions })
         },
+        gameWon: (by: 0|1) => {
+            const value = get(store)
+            if(value == undefined)
+                return
+
+            value.wonBy = by
+            store.set(value)
+        },
+        end(){
+            const value = get(store)
+            if(value) store.set(undefined)
+        }
     }
 })()

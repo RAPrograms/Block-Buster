@@ -1,14 +1,17 @@
 <script lang="ts">
-  import Game from './components/Game.svelte';
-import MainMenu from './components/MainMenu.svelte';
- 
   import TemplateEditor from './components/TemplateEditor.svelte';
+  import WinningModel from './components/modals/Winning.svelte';
+  import MainMenu from './components/MainMenu.svelte';
+  import Game from './components/Game.svelte';
 
   import { templateStore, type template, currentGame } from './lib/data';
 
   let templateInspecting: null | template = null
 </script>
-{#if $currentGame == undefined}
+
+<WinningModel/>
+
+{#if $currentGame == undefined || $currentGame?.wonBy !== -1}
   {#if templateInspecting == null}
     <MainMenu
       on:createTemplate={() => {templateInspecting = {name: "", grid_size: 5, questions: {}}}}
