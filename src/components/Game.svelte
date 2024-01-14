@@ -25,9 +25,7 @@
         //@ts-ignore
         root.style.setProperty('--team-two-colour', details.teams[1].colour);
 
-        //TODO: re-add code
-        //currentTeam.id = (Math.random() > .5)? 1:0
-        currentTeam.id = 0
+        currentTeam.id = (Math.random() > .5)? 1:0
     })
 
     onDestroy(() => {
@@ -115,19 +113,8 @@
 
         if(instance.capured !== -1)
             return
-        
-        instance.capured = 0
-        instance.colour = details.teams[0].colour
-        
-        const path = await details.board.getWiningPath()
+    
 
-        if(path != null)
-            path.forEach(location => {
-                const [colum, row] = location.split("|")
-                details.board.matrix[Number(colum)][Number(row)].colour = "orange"
-            })
-
-        return
         //@ts-ignore
         const questions: Record<string, { answer: string; question: string; }[]> = $currentGame?.questions[instance.character.toLowerCase()]
         
@@ -144,6 +131,20 @@
         //Set tile's team
         instance.capured = answerResult
         instance.colour = details.teams[answerResult].colour
+
+
+
+        const path = await details.board.getWiningPath()
+
+        if(path != null){
+            console.log(path.team + 1);
+            
+            //@ts-ignore
+            path?.result.forEach(location => {
+                const [colum, row] = location.split("|")
+                details.board.matrix[Number(colum)][Number(row)].colour = "orange"
+            })
+        }
 
         
 
