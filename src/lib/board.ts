@@ -59,6 +59,7 @@ export default class Board{
 
 
     #leftToRightWiningPath(team: 0|1, possition: [number, number], path: Array<string> = []): null | Array<string>{
+        //Base
         const instance = this.matrix[possition[0]]?.[possition[1]]
         if(instance == undefined)
             return null
@@ -75,33 +76,36 @@ export default class Board{
             return path
         }
 
+        //Recursion
         const new_path = path.slice(0)
         new_path.push(`${possition[0]}|${possition[1]}`)
-        
+
         for(var i=0; i<6; i++){
-            const result = this.#leftToRightWiningPath(team, getSiblingTilePosition(possition, i), new_path)
-            if(result)
-                return result
+            const path = this.#leftToRightWiningPath(team, getSiblingTilePosition(possition, i), new_path)
+            if(path) return path
         }
 
         return null
     }
     
 
-    getWiningPath(){
+    async getWiningPath(){
+        const pathPromises: Promise<Array<string> | null>[] = []
 
+        for(let i=0; i<this.matrix.length; i++){
+            pathPromises.push(new Promise<Array<string> | null>((resolve, reject) => {
+                resolve( this.#leftToRightWiningPath(0, [0, i]) )
+            }))
+        }
 
-        const result = this.#leftToRightWiningPath(0, [0, 0])
-        console.log("\nwining path", result)
+        await Promise.all(pathPromises)
 
-        if(result != null)
-            result.forEach(location => {
-                const [colum, row] = location.split("|")
-                this.matrix[Number(colum)][Number(row)].colour = "orange"
-            })
+        for(const index in pathPromises) {
+            const result = await pathPromises[index]
+            if(result == null)
+                continue
 
-        /*for(var i=0; i<this.matrix.length; i++){
-            this.#leftToRightWiningPath(1, [0, i], [])
-        }*/
+            return result
+        }
     }
 }
