@@ -82,24 +82,25 @@ export function ForceNumberInput(e: KeyboardEvent){
 
 
 export function getSiblingTilePosition(current: [number, number], siblin: number): [number, number]{
+    const oddColum = current[0] % 2 != 0
     switch(siblin){
         case 0: //Top
             return [current[0], current[1] - 1]
         
         case 1: //Top right
-            return [current[0] + 1, current[1]]
+            return [current[0] + 1, current[1] - (oddColum? 1:0)]
 
         case 2: //Bottem Right
-            return [current[0] + 1, current[1] + 1]
+            return [current[0] + 1, current[1] + (oddColum? 0:1)]
 
         case 3: //Bottem
-            return [current[0], current[1] + 1]
+            return [current[0], current[1] + (oddColum? 1:0)]
 
         case 4: //Bottem Left
-            return [current[0] -1, current[1] + 1]
+            return [current[0] -1, current[1] - (oddColum? 0:1)]
 
         case 5: //Top Left
-            return [current[0] -1, current[1]]
+            return [current[0] -1, current[1] - (oddColum? 1:0)]
     }
 
     return [NaN, NaN]
