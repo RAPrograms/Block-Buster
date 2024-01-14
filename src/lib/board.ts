@@ -56,14 +56,14 @@ export default class Board{
             })
         });
     }
-
-
-    #leftToRightWiningPath(team: 0|1, possition: [number, number], path: Array<string> = []): null | Array<string>{
+    
+    #recursiveWiningPathCheck(team: 0|1, possition: [number, number], conditionCheck: (position: [number, number], boardSize: number) => boolean, path: Array<string> = []): null | Array<string>{
         //Base
         const instance = this.matrix[possition[0]]?.[possition[1]]
         if(instance == undefined)
             return null
-        
+
+
         if(instance.capured !== team)
             return null
 
@@ -71,7 +71,7 @@ export default class Board{
         if(path.includes(`${possition[0]}|${possition[1]}`))
             return null
 
-        if(possition[0] == this.matrix.length - 1){
+        if(conditionCheck(possition, this.matrix.length)){
             path.push(`${possition[0]}|${possition[1]}`)
             return path
         }
@@ -81,28 +81,39 @@ export default class Board{
         new_path.push(`${possition[0]}|${possition[1]}`)
 
         for(var i=0; i<6; i++){
-            const path = this.#leftToRightWiningPath(team, getSiblingTilePosition(possition, i), new_path)
+            const path = this.#recursiveWiningPathCheck(team, getSiblingTilePosition(possition, i), conditionCheck, new_path)
             if(path) return path
         }
 
         return null
     }
-    
 
     async getWiningPath(){
-        const pathPromises: Promise<Array<string> | null>[] = []
+        const horizontalCheck = (possition: [number, number], size: number) => { return possition[0] == size - 1 }
+        const verticalCheck = (possition: [number, number], size: number) => { return possition[1] == size - 1 }
+        
+        interface responseContent{
+            result: string[] | null,
+            team: number
+        }
+
+        const pathPromises: Array<Promise<responseContent>> = []
 
         for(let i=0; i<this.matrix.length; i++){
-            pathPromises.push(new Promise<Array<string> | null>((resolve, reject) => {
-                resolve( this.#leftToRightWiningPath(0, [0, i]) )
-            }))
+            //Team 1
+            pathPromises.push(new Promise<responseContent>(resolve => { resolve({result: this.#recursiveWiningPathCheck(0, [0, i], horizontalCheck), team: 0}) }))
+            pathPromises.push(new Promise<responseContent>(resolve => { resolve({result: this.#recursiveWiningPathCheck(0, [i, 0], verticalCheck), team: 0}) }))
+
+            //Team 2
+            pathPromises.push(new Promise<responseContent>(resolve => { resolve({result: this.#recursiveWiningPathCheck(1, [0, i], horizontalCheck), team: 1}) }))
+            pathPromises.push(new Promise<responseContent>(resolve => { resolve({result: this.#recursiveWiningPathCheck(1, [i, 0], verticalCheck), team: 1}) }))
         }
 
         await Promise.all(pathPromises)
 
         for(const index in pathPromises) {
             const result = await pathPromises[index]
-            if(result == null)
+            if(result.result == null)
                 continue
 
             return result
