@@ -132,6 +132,7 @@ export const currentGame = (() => {
             const template = await templateStore.get(id)
             //@ts-ignore
             const board = new Board(template?.grid_size, Object.keys(template?.questions))
+            console.log(board)
             //@ts-ignore
             store.set({ board, streakLimit, wonBy: -1, teams: [team1, team2], questions: template?.questions })
         },

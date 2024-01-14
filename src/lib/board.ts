@@ -11,9 +11,12 @@ export default class Board{
             this.matrix.push(new Array(size).fill(undefined).map(() => {
                 let index = -1
 
-                while(index === -1 || temp.includes(index)){
-                    index = Math.round(Math.random() * (possibleCharacters.length - 1))
-                }
+                if(possibleCharacters.length > 1)
+                    while(index === -1 || temp.includes(index)){
+                        index = Math.round(Math.random() * (possibleCharacters.length - 1))
+                    }
+                else
+                    index = 0
 
                 if(possibleCharacters.length < 3 || temp.length >= 3)
                     temp.splice(0, 1)
