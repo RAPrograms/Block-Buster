@@ -41,7 +41,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npx vite run build --base=/Block-Buster/
+        run: npx vite build --base=/Block-Buster/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
