@@ -1,7 +1,7 @@
 This is a svelte game based on british game show with the same name.
 
 ## Demo
-[https://dog2657.github.io/Block-Buster/](https://raprograms.github.io/Block-Buster/)
+[https://raprograms.github.io/Block-Buster/](https://raprograms.github.io/Block-Buster/)
 
 
 ## About
